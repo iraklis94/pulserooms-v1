@@ -212,9 +212,8 @@ export const getAnalytics = query({
       checkDate.setDate(checkDate.getDate() - 1);
     }
 
-    await ctx.db.patch(args.circleId, {
-      circleStreak: currentStreak,
-    });
+    // Note: Cannot patch in a query - streak calculation is read-only here
+    // If you need to persist the streak, use a separate mutation
 
     return {
       stabilityScore: circle.stabilityScore,

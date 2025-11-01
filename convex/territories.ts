@@ -1,8 +1,8 @@
 import { v } from 'convex/values';
-import { mutation, query } from './_generated/server';
+import { mutation, query, internalMutation } from './_generated/server';
 
 // Update territory data (called by cron every 30 seconds)
-export const updateTerritories = mutation({
+export const updateTerritories = internalMutation({
   args: {},
   handler: async (ctx) => {
     const now = Date.now();
@@ -184,7 +184,7 @@ export const getInRegion = query({
 });
 
 // Clean up stale territories (called by cron)
-export const cleanupStale = mutation({
+export const cleanupStale = internalMutation({
   args: {},
   handler: async (ctx) => {
     const now = Date.now();

@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { mutation, query } from './_generated/server';
+import { mutation, query, internalMutation } from './_generated/server';
 
 // Create a new challenge
 export const create = mutation({
@@ -112,7 +112,7 @@ export const end = mutation({
 });
 
 // Clean up old challenges (called by cron)
-export const cleanupOld = mutation({
+export const cleanupOld = internalMutation({
   args: {},
   handler: async (ctx) => {
     const now = Date.now();

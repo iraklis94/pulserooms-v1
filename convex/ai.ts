@@ -1,6 +1,7 @@
 import { v } from 'convex/values';
 import { action, internalMutation, internalQuery, query } from './_generated/server';
 import { internal } from './_generated/api';
+import { Doc } from './_generated/dataModel';
 
 // Analyze user's mood patterns and generate insights
 export const analyzeMoodPatterns = action({
@@ -19,8 +20,8 @@ export const analyzeMoodPatterns = action({
     const moodCounts: Record<string, number> = {};
     let totalMoods = 0;
 
-    history.forEach((day) => {
-      day.moods.forEach((m) => {
+    history.forEach((day: Doc<'moodHistory'>) => {
+      day.moods.forEach((m: { mood: string; color: string; intensity: number; timestamp: number }) => {
         moodCounts[m.mood] = (moodCounts[m.mood] || 0) + 1;
         totalMoods++;
       });
@@ -124,9 +125,9 @@ export const getMoodHistory = internalQuery({
 // Generate AI mood avatar
 export const generateMoodAvatar = action({
   args: { userId: v.id('users') },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<{ name: string; visualData: string; moodPattern: string[]; evolution: number } | null> => {
     // Get mood patterns
-    const history = await ctx.runQuery(internal.ai.getMoodHistory, {
+    const history: Doc<'moodHistory'>[] = await ctx.runQuery(internal.ai.getMoodHistory, {
       userId: args.userId,
     });
 
@@ -135,13 +136,13 @@ export const generateMoodAvatar = action({
     }
 
     // Extract mood pattern
-    const recentMoods = history
+    const recentMoods: string[] = history
       .slice(-7)
-      .flatMap((day) => day.moods.map((m) => m.mood));
+      .flatMap((day: Doc<'moodHistory'>) => day.moods.map((m: { mood: string; color: string; intensity: number; timestamp: number }) => m.mood));
 
     // In production, call generative AI service
     // For now, create a simple deterministic avatar
-    const moodPattern = [...new Set(recentMoods)];
+    const moodPattern: string[] = [...new Set(recentMoods)];
     const evolution = history.length;
 
     const avatarData = {
@@ -217,9 +218,9 @@ export const predictMoodForTerritory = action({
     city: v.string(),
     country: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<{ city: string; predictedMood: string; confidence: number; date: string } | null> => {
     // Get historical data for this territory
-    const territory = await ctx.runQuery(internal.ai.getTerritoryByCity, {
+    const territory: Doc<'territories'> | null = await ctx.runQuery(internal.ai.getTerritoryByCity, {
       city: args.city,
       country: args.country,
     });
@@ -229,7 +230,7 @@ export const predictMoodForTerritory = action({
     }
 
     // Simple prediction based on current mood
-    const predictedMood = territory.dominantMood;
+    const predictedMood: string = territory.dominantMood;
     const confidence = 0.75;
 
     // Save forecast

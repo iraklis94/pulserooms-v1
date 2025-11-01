@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { mutation, query } from './_generated/server';
+import { mutation, query, internalMutation } from './_generated/server';
 
 // Send sync pulse request
 export const sendRequest = mutation({
@@ -136,7 +136,7 @@ export const getHistory = query({
 });
 
 // Clean up expired requests (called by cron)
-export const cleanupExpired = mutation({
+export const cleanupExpired = internalMutation({
   args: {},
   handler: async (ctx) => {
     const now = Date.now();

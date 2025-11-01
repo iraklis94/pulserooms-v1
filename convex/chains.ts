@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { mutation, query } from './_generated/server';
+import { mutation, query, internalMutation } from './_generated/server';
 
 // Start a new pulse chain
 export const start = mutation({
@@ -101,7 +101,7 @@ export const getTopChains = query({
 });
 
 // Clean up expired chains
-export const cleanupExpired = mutation({
+export const cleanupExpired = internalMutation({
   args: {},
   handler: async (ctx) => {
     const now = Date.now();

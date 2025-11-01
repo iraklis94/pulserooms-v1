@@ -1,8 +1,8 @@
 import { v } from 'convex/values';
-import { mutation, query } from './_generated/server';
+import { mutation, query, internalMutation } from './_generated/server';
 
 // Create or update user from Clerk webhook
-export const upsertFromClerk = mutation({
+export const upsertFromClerk = internalMutation({
   args: {
     clerkId: v.string(),
     username: v.string(),
@@ -55,6 +55,17 @@ export const getById = query({
   args: { userId: v.id('users') },
   handler: async (ctx, args) => {
     return await ctx.db.get(args.userId);
+  },
+});
+
+// Get multiple users by IDs
+export const getMultipleByIds = query({
+  args: { userIds: v.array(v.id('users')) },
+  handler: async (ctx, args) => {
+    const users = await Promise.all(
+      args.userIds.map((id) => ctx.db.get(id))
+    );
+    return users.filter((u) => u !== null);
   },
 });
 
@@ -114,7 +125,7 @@ export const updateStreak = mutation({
 });
 
 // Reset daily pulse limit (called by cron)
-export const resetDailyPulses = mutation({
+export const resetDailyPulses = internalMutation({
   args: {},
   handler: async (ctx) => {
     const users = await ctx.db.query('users').collect();

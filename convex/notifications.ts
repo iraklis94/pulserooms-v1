@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { mutation, query } from './_generated/server';
+import { mutation, query, internalMutation } from './_generated/server';
 
 // Get user notifications
 export const getUserNotifications = query({
@@ -88,7 +88,7 @@ export const create = mutation({
 });
 
 // Clean up expired notifications (called by cron)
-export const cleanupExpired = mutation({
+export const cleanupExpired = internalMutation({
   args: {},
   handler: async (ctx) => {
     const now = Date.now();

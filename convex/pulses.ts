@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { mutation, query } from './_generated/server';
+import { mutation, query, internalMutation } from './_generated/server';
 import { Doc, Id } from './_generated/dataModel';
 
 // Create a new pulse
@@ -135,14 +135,14 @@ export const getUserPulses = query({
     const limit = args.limit || 20;
     return await ctx.db
       .query('pulses')
-      .withIndex('by_user_time', (q) => q.eq('userId', args.userId))
+      .withIndex('by_user', (q) => q.eq('userId', args.userId))
       .order('desc')
       .take(limit);
   },
 });
 
 // Clean up expired pulses (called by cron)
-export const cleanupExpired = mutation({
+export const cleanupExpired = internalMutation({
   args: {},
   handler: async (ctx) => {
     const now = Date.now();

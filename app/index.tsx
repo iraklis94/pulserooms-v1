@@ -3,7 +3,14 @@ import { Redirect } from 'expo-router';
 import { useAuth } from '@clerk/clerk-expo';
 import { View, ActivityIndicator } from 'react-native';
 
+const DISABLE_AUTH = process.env.EXPO_PUBLIC_DISABLE_AUTH === 'true';
+
 export default function Index() {
+  // Development mode: bypass auth check
+  if (DISABLE_AUTH) {
+    return <Redirect href="/(tabs)" />;
+  }
+
   const { isSignedIn, isLoaded } = useAuth();
 
   if (!isLoaded) {

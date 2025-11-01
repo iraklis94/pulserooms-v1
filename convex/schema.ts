@@ -34,8 +34,7 @@ export default defineSchema({
     .index('by_user', ['userId'])
     .index('by_expiration', ['expiresAt'])
     .index('by_location', ['lat', 'lon'])
-    .index('by_mood', ['mood'])
-    .index('by_user_time', ['userId', '_creationTime']),
+    .index('by_mood', ['mood']),
 
   // Real-time ephemeral rooms
   rooms: defineTable({

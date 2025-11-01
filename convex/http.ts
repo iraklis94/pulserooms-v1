@@ -9,17 +9,26 @@ http.route({
   path: '/clerk-webhook',
   method: 'POST',
   handler: httpAction(async (ctx, request) => {
-    const payload = await request.json();
+    const payload = (await request.json()) as {
+      type: string;
+      data: {
+        id: string;
+        username?: string;
+        email_addresses?: Array<{ email_address: string }>;
+        image_url?: string;
+      };
+    };
 
     const eventType = payload.type;
     const userData = payload.data;
 
     try {
       if (eventType === 'user.created' || eventType === 'user.updated') {
+        const emailAddress = userData.email_addresses?.[0]?.email_address || '';
         await ctx.runMutation(internal.users.upsertFromClerk, {
           clerkId: userData.id,
-          username: userData.username || userData.email_addresses[0]?.email_address.split('@')[0] || 'user',
-          email: userData.email_addresses[0]?.email_address || '',
+          username: userData.username || emailAddress.split('@')[0] || 'user',
+          email: emailAddress,
           avatar: userData.image_url,
         });
       }

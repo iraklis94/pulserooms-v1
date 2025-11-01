@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { mutation, query } from './_generated/server';
+import { mutation, query, internalMutation } from './_generated/server';
 
 // Create or get existing chat room
 export const createOrGetRoom = mutation({
@@ -113,7 +113,7 @@ export const leaveRoom = mutation({
 });
 
 // Clean up expired messages (called by cron)
-export const cleanupExpiredMessages = mutation({
+export const cleanupExpiredMessages = internalMutation({
   args: {},
   handler: async (ctx) => {
     const now = Date.now();
@@ -131,7 +131,7 @@ export const cleanupExpiredMessages = mutation({
 });
 
 // Clean up inactive rooms (called by cron)
-export const cleanupInactiveRooms = mutation({
+export const cleanupInactiveRooms = internalMutation({
   args: {},
   handler: async (ctx) => {
     const now = Date.now();
