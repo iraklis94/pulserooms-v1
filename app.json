@@ -1,0 +1,81 @@
+{
+  "expo": {
+    "name": "PulseRooms",
+    "slug": "pulserooms",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "scheme": "pulserooms",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pulserooms.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "PulseRooms uses your location to show nearby pulses and connect you with people feeling the same emotions in your area.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "PulseRooms uses your location to show nearby pulses and connect you with people feeling the same emotions in your area.",
+        "NSMicrophoneUsageDescription": "PulseRooms needs microphone access to record your 1-second vibe sound.",
+        "NSCameraUsageDescription": "PulseRooms needs camera access for profile photos and sharing mood moments.",
+        "NSPhotoLibraryUsageDescription": "PulseRooms needs photo library access to save and share your mood visualizations.",
+        "NSUserNotificationsUsageDescription": "PulseRooms sends notifications for sync pulse requests, streak reminders, and circle activity."
+      }
+    },
+    "android": {
+      "package": "com.pulserooms.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#000000"
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "RECORD_AUDIO",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "VIBRATE",
+        "RECEIVE_BOOT_COMPLETED",
+        "FOREGROUND_SERVICE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow PulseRooms to use your location to show nearby pulses."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#ffffff",
+          "sounds": ["./assets/pulse-notification.wav"]
+        }
+      ],
+      "expo-av",
+      "expo-camera"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "your-project-id"
+      }
+    }
+  }
+}
+

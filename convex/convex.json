@@ -1,0 +1,10 @@
+{
+  "functions": "convex/",
+  "authInfo": [
+    {
+      "applicationID": "convex",
+      "domain": "https://your-app.clerk.accounts.dev"
+    }
+  ]
+}
+
