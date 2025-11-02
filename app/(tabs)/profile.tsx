@@ -15,6 +15,7 @@ import { MoodCardGallery } from '@/components/gamification/MoodCardGallery';
 import { ChainVisualization } from '@/components/gamification/ChainVisualization';
 import { QuestBoard } from '@/components/gamification/QuestBoard';
 import { SubscriptionModal } from '@/components/premium/SubscriptionModal';
+import { WeeklyPulseCalendar } from '@/components/social/WeeklyPulseCalendar';
 import { Colors } from '@/constants/Colors';
 
 export default function ProfileScreen() {
@@ -114,6 +115,8 @@ export default function ProfileScreen() {
       <ScrollView style={styles.content}>
         {activeTab === 'overview' && (
           <View style={styles.section}>
+            {currentUser && <WeeklyPulseCalendar userId={currentUser._id} />}
+
             {!currentUser?.premiumStatus && (
               <Card style={styles.upgradeCard}>
                 <Text style={styles.upgradeTitle}>Upgrade to Premium</Text>

@@ -87,5 +87,12 @@ crons.daily(
   internal.notifications.cleanupExpired
 );
 
+// Reset weekly pulse assignments every Sunday at midnight UTC
+crons.daily(
+  'reset weekly pulse assignments',
+  { hourUTC: 0, minuteUTC: 0 },
+  internal.weeklyPulses.resetWeeklyAssignments
+);
+
 export default crons;
 
