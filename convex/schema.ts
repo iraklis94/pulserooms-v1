@@ -279,5 +279,28 @@ export default defineSchema({
     .index('by_type', ['eventType'])
     .index('by_timestamp', ['timestamp'])
     .index('by_user_time', ['userId', 'timestamp']),
+
+  // Weekly pulse calendar assignments
+  weeklyPulseCalendar: defineTable({
+    userId: v.id('users'),
+    weekStart: v.string(), // YYYY-MM-DD of Sunday
+    weekEnd: v.string(), // YYYY-MM-DD of Saturday
+    assignments: v.array(
+      v.object({
+        dayOfWeek: v.number(), // 0=Sunday, 6=Saturday
+        date: v.string(), // YYYY-MM-DD
+        matchedUserId: v.optional(v.id('users')),
+        mood: v.string(),
+        color: v.string(),
+        completed: v.boolean(),
+        syncedAt: v.optional(v.number()),
+      })
+    ),
+    isActive: v.boolean(),
+  })
+    .index('by_user', ['userId'])
+    .index('by_week', ['weekStart'])
+    .index('by_user_week', ['userId', 'weekStart'])
+    .index('by_active', ['isActive']),
 });
 
