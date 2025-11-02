@@ -87,5 +87,12 @@ crons.daily(
   internal.notifications.cleanupExpired
 );
 
+// Generate new weekly pulse calendars every Sunday at midnight UTC
+crons.weekly(
+  'generate weekly pulse calendars',
+  { hourUTC: 0, minuteUTC: 0, dayOfWeek: 'sunday' },
+  internal.weeklyPulseCalendar.generateAllCalendars
+);
+
 export default crons;
 

@@ -68,6 +68,57 @@ export const acceptRequest = mutation({
       metadata: { syncedWith: request.fromUserId },
     });
 
+    // Mark calendar assignments as completed for both users
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Helper to get week start
+    const getWeekStart = (date: Date): string => {
+      const d = new Date(date);
+      const day = d.getDay();
+      const diff = d.getDate() - day;
+      d.setDate(diff);
+      d.setHours(0, 0, 0, 0);
+      return d.toISOString().split('T')[0];
+    };
+    
+    const weekStart = getWeekStart(new Date());
+    
+    // Update calendar for fromUser
+    const fromCalendar = await ctx.db
+      .query('weeklyPulseCalendar')
+      .withIndex('by_user_week', (q) =>
+        q.eq('userId', request.fromUserId).eq('weekStart', weekStart)
+      )
+      .first();
+    
+    if (fromCalendar) {
+      const updatedAssignments = fromCalendar.assignments.map((a) => {
+        if (a.date === today) {
+          return { ...a, completed: true, syncedAt: now };
+        }
+        return a;
+      });
+      await ctx.db.patch(fromCalendar._id, { assignments: updatedAssignments });
+    }
+    
+    // Update calendar for toUser
+    const toCalendar = await ctx.db
+      .query('weeklyPulseCalendar')
+      .withIndex('by_user_week', (q) =>
+        q.eq('userId', request.toUserId).eq('weekStart', weekStart)
+      )
+      .first();
+    
+    if (toCalendar) {
+      const updatedAssignments = toCalendar.assignments.map((a) => {
+        if (a.date === today) {
+          return { ...a, completed: true, syncedAt: now };
+        }
+        return a;
+      });
+      await ctx.db.patch(toCalendar._id, { assignments: updatedAssignments });
+    }
+
     // Notify sender of acceptance
     await ctx.db.insert('notifications', {
       userId: request.fromUserId,

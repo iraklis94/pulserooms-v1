@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useMutation } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import * as Haptics from 'expo-haptics';
 import Animated, {
@@ -21,6 +21,8 @@ interface SyncPulseModalProps {
   visible: boolean;
   requestId: Id<'syncPulseRequests'>;
   fromUsername: string;
+  fromUserId: Id<'users'>;
+  toUserId: Id<'users'>;
   color: string;
   onClose: () => void;
 }
@@ -29,6 +31,8 @@ export function SyncPulseModal({
   visible,
   requestId,
   fromUsername,
+  fromUserId,
+  toUserId,
   color,
   onClose,
 }: SyncPulseModalProps) {
@@ -38,6 +42,10 @@ export function SyncPulseModal({
 
   const acceptRequest = useMutation(api.sync.acceptRequest);
   const rejectRequest = useMutation(api.sync.rejectRequest);
+  
+  // Check if this is a calendar match
+  const todayMatch = useQuery(api.weeklyPulseCalendar.getTodayMatch, { userId: toUserId });
+  const isCalendarMatch = todayMatch?.user?._id === fromUserId;
 
   const pulseScale = useSharedValue(1);
   const pulseOpacity = useSharedValue(1);
@@ -144,6 +152,12 @@ export function SyncPulseModal({
           <Text style={styles.subtitle}>
             {fromUsername} wants to sync with you!
           </Text>
+
+          {isCalendarMatch && (
+            <View style={styles.calendarBadge}>
+              <Text style={styles.calendarBadgeText}>📅 Today's Calendar Match!</Text>
+            </View>
+          )}
 
           <Animated.View style={[styles.pulseVisual, animatedPulseStyle]}>
             <View style={[styles.pulseCircle, { backgroundColor: color }]} />
@@ -278,6 +292,20 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: Colors.textSecondary,
     textAlign: 'center',
+  },
+  calendarBadge: {
+    backgroundColor: Colors.primary + '40',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: Colors.primary,
+  },
+  calendarBadgeText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: Colors.text,
   },
 });
 

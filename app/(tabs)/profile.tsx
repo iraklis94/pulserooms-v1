@@ -15,6 +15,7 @@ import { MoodCardGallery } from '@/components/gamification/MoodCardGallery';
 import { ChainVisualization } from '@/components/gamification/ChainVisualization';
 import { QuestBoard } from '@/components/gamification/QuestBoard';
 import { SubscriptionModal } from '@/components/premium/SubscriptionModal';
+import { WeeklyPulseCalendar } from '@/components/social/WeeklyPulseCalendar';
 import { Colors } from '@/constants/Colors';
 
 export default function ProfileScreen() {
@@ -22,7 +23,7 @@ export default function ProfileScreen() {
   const { user } = useUser();
   const router = useRouter();
   const [showSubscription, setShowSubscription] = useState(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'badges' | 'cards' | 'ai' | 'diary' | 'chains' | 'quests'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'badges' | 'cards' | 'ai' | 'diary' | 'chains' | 'quests' | 'calendar'>('overview');
 
   const currentUser = useQuery(
     api.users.getCurrentUser,
@@ -89,6 +90,7 @@ export default function ProfileScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {[
             { id: 'overview', label: 'Overview', icon: '📊' },
+            { id: 'calendar', label: 'Calendar', icon: '📅' },
             { id: 'badges', label: 'Badges', icon: '🏅' },
             { id: 'cards', label: 'Cards', icon: '🎴' },
             { id: 'chains', label: 'Chains', icon: '⛓️' },
@@ -156,6 +158,12 @@ export default function ProfileScreen() {
             <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
               <Text style={styles.signOutText}>Sign Out</Text>
             </TouchableOpacity>
+          </View>
+        )}
+
+        {activeTab === 'calendar' && currentUser && (
+          <View style={styles.section}>
+            <WeeklyPulseCalendar userId={currentUser._id} />
           </View>
         )}
 

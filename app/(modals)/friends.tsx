@@ -17,6 +17,7 @@ export default function FriendsModal() {
   const [selectedSyncRequest, setSelectedSyncRequest] = useState<{
     requestId: Id<'syncPulseRequests'>;
     fromUsername: string;
+    fromUserId: Id<'users'>;
     color: string;
   } | null>(null);
 
@@ -59,6 +60,7 @@ export default function FriendsModal() {
       setSelectedSyncRequest({
         requestId: request._id,
         fromUsername: fromUser?.username || 'Friend',
+        fromUserId: request.fromUserId,
         color: request.color,
       });
     }
@@ -168,11 +170,13 @@ export default function FriendsModal() {
       </ScrollView>
 
       {/* Sync Pulse Modal */}
-      {selectedSyncRequest && (
+      {selectedSyncRequest && currentUser && (
         <SyncPulseModal
           visible={!!selectedSyncRequest}
           requestId={selectedSyncRequest.requestId}
           fromUsername={selectedSyncRequest.fromUsername}
+          fromUserId={selectedSyncRequest.fromUserId}
+          toUserId={currentUser._id}
           color={selectedSyncRequest.color}
           onClose={() => setSelectedSyncRequest(null)}
         />
